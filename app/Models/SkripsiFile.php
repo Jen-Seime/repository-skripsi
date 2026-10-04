@@ -25,6 +25,26 @@ class SkripsiFile extends Model
     protected $table = 'skripsi_files';
 
     /**
+     * Boot the model.
+     */
+    protected static function booted(): void
+    {
+        // Saat update: hapus file lama dari storage jika path berubah
+        static::updating(function (SkripsiFile $file) {
+            if ($file->isDirty('path') && $file->getOriginal('path')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($file->getOriginal('path'));
+            }
+        });
+
+        // Saat delete: hapus file dari storage
+        static::deleting(function (SkripsiFile $file) {
+            if ($file->path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($file->path);
+            }
+        });
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

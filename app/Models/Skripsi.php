@@ -26,9 +26,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Skripsi extends Model
 {
     /** @use HasFactory<SkripsiFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $table = 'skripsi';
+
+    /**
+     * Boot the model.
+     */
+    protected static function booted(): void
+    {
+        // Saat Skripsi dihapus: hapus semua record SkripsiFile via Eloquent
+        // agar event deleting pada SkripsiFile ter-trigger dan file fisiknya di storage ikut terhapus
+        static::deleting(function (Skripsi $skripsi) {
+            $skripsi->files->each->delete();
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

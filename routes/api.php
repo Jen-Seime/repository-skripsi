@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthenticationController;
+use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\ProfilController;
-use Illuminate\Auth\Events\Logout;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 
 // login
@@ -18,8 +18,15 @@ Route::middleware('auth:sanctum')->group(function() {
     //profil
     Route::get('/profil', [ProfilController::class, 'show']);
 
-    // Route::middleware('role:mahasiswa')->group(function () {
+    Route::middleware('role:mahasiswa')->group(function () {
 
-    // };
+        //mahasiswa
+        Route::get('/my-skripsi', [MahasiswaController::class, 'index']);
+        Route::get('/my-skripsi/{id}', [MahasiswaController::class, 'show']);
+        Route::post('/saved-skripsi', [MahasiswaController::class, 'store']);
+        Route::put('/my-skripsi/{id}', [MahasiswaController::class,'update']);
+        Route::delete('/my-skripsi/{id}', [MahasiswaController::class,'destroy']);
+
+    });
 
 });

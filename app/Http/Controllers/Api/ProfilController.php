@@ -22,7 +22,18 @@ class ProfilController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'judul' => 'required',
+            'abstrak' => 'required',
+            'kata_kunci' => 'required',
+            'tahun' => 'required',
+            'file_skripsi' => 'required|file|mimes:pdf|max:20480',
+            'file_source_code' => 'nullable|file|mimes:zip,rar,tar,gz|max:51200',
+        ]);
+
+        $mahasiswa = $request->user()->mahasiswa;
+
+        
     }
 
     /**

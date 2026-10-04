@@ -21,10 +21,12 @@ class RoleMiddleware
             ], 401);
         }
 
-        if (!in_array($request->user()->role, $role)) {
+        $userRole = $request->user()->role?->value ?? $request->user()->role;
+
+        if (!in_array($userRole, $role)) {
             return response()->json([
                 'message' => 'Anda tidak memiliki akses.',
-            ],403);
+            ], 403);
         }
 
 
