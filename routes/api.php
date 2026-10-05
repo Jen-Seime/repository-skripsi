@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\EmbeddingController;
+use App\Http\Controllers\Api\KepalaMahasiswaController;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\ProfilController;
 use App\Http\Controllers\Api\RepositoryController;
 use App\Http\Controllers\Api\SavedController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SearchHistoryController;
+use App\Http\Controllers\Api\StatistikController;
+use App\Http\Controllers\Api\VerifikasiController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -45,6 +48,17 @@ Route::middleware('auth:sanctum')->group(function() {
     //repository
     Route::get('/repository/skripsi', [RepositoryController::class, 'index']);
     Route::get('/repository/skripsi/{id}', [RepositoryController::class, 'show']);
+
+    // kepala perpustakaan
+    Route::middleware('role:kepala_perpustakaan')->group(function () {
+        
+        Route::get('/verifikasi/skripsi', [VerifikasiController::class, 'index']);
+        Route::get('/verifikasi/skripsi/{id}', [VerifikasiController::class, 'show']);
+        Route::post('/verifikasi/skripsi/{id}/approve', [VerifikasiController::class, 'approve']);
+        Route::post('/verifikasi/skripsi/{id}/reject', [VerifikasiController::class, 'reject']);
+        Route::get('/mahasiswa', [KepalaMahasiswaController::class, 'index']);
+        Route::get('/statistik', [StatistikController::class, 'index']);
+    });
 
 });
 
