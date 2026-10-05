@@ -1,9 +1,15 @@
 <?php
 
 use App\Http\Controllers\Api\AuthenticationController;
+use App\Http\Controllers\Api\EmbeddingController;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\ProfilController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\SearchHistoryController;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 
 
@@ -27,6 +33,19 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('/my-skripsi/{id}', [MahasiswaController::class,'update']);
         Route::delete('/my-skripsi/{id}', [MahasiswaController::class,'destroy']);
 
+        // search
+        Route::post('/search/semantic', [SearchController::class, 'semantic']);
+        Route::get('/search-history', [SearchHistoryController::class, 'index']);
+        Route::delete('/search-history/all', [SearchHistoryController::class, 'destroyAll']);
+        Route::delete('/search-history/{id}', [SearchHistoryController::class, 'destroy']);
+
+
     });
 
 });
+
+Route::post(
+    '/embeddings/{id}',
+    [EmbeddingController::class, 'generate']
+);
+

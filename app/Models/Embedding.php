@@ -30,7 +30,7 @@ class Embedding extends Model
     {
         return [
             'dimension' => 'integer',
-            'embedding' => 'array',
+            'embedding' => 'json',
         ];
     }
 
