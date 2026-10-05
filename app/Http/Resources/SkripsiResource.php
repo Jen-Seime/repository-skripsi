@@ -36,6 +36,14 @@ class SkripsiResource extends JsonResource
                 ];
             }),
 
+            'mahasiswa' => $this->whenLoaded('mahasiswa', function () {
+                return [
+                    'id' => $this->mahasiswa?->id,
+                    'nama' => $this->mahasiswa?->user?->name,
+                    'nim' => $this->mahasiswa?->nim,
+                ];
+            }),
+
             'files' => $this->whenLoaded('files', function () {
                 return $this->files->map(fn ($file) => [
                     'id' => $file->id,

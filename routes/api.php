@@ -4,9 +4,11 @@ use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\EmbeddingController;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\ProfilController;
+use App\Http\Controllers\Api\RepositoryController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SearchHistoryController;
 use Illuminate\Support\Facades\Route;
+
 
 
 
@@ -38,9 +40,11 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/search-history', [SearchHistoryController::class, 'index']);
         Route::delete('/search-history/all', [SearchHistoryController::class, 'destroyAll']);
         Route::delete('/search-history/{id}', [SearchHistoryController::class, 'destroy']);
-
-
     });
+
+    //repository
+    Route::get('/repository/skripsi', [RepositoryController::class, 'index']);
+    Route::get('/repository/skripsi/{id}', [RepositoryController::class, 'show']);
 
 });
 
