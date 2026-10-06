@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // mahasiswa
         Route::get('/my-skripsi', [MahasiswaController::class, 'index']);
+        Route::get('/my-skripsi', [MahasiswaController::class, 'store']);
         Route::get('/my-skripsi/{id}', [MahasiswaController::class, 'show']);
         Route::put('/my-skripsi/{id}', [MahasiswaController::class, 'update']);
         Route::delete('/my-skripsi/{id}', [MahasiswaController::class, 'destroy']);
