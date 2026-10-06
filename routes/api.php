@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\EmbeddingController;
+use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\KepalaMahasiswaController;
 use App\Http\Controllers\Api\MahasiswaController;
 use App\Http\Controllers\Api\ProfilController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Api\SearchHistoryController;
 use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\VerifikasiController;
 use Illuminate\Support\Facades\Route;
+
 
 
 // login
@@ -58,6 +60,12 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::post('/verifikasi/skripsi/{id}/reject', [VerifikasiController::class, 'reject']);
         Route::get('/mahasiswa', [KepalaMahasiswaController::class, 'index']);
         Route::get('/statistik', [StatistikController::class, 'index']);
+
+        Route::post('/kategori', [KategoriController::class, 'store']);
+        Route::put('/kategori/{id}', [KategoriController::class, 'update']);
+        Route::delete('/kategori/{id}', [KategoriController::class, 'destroy']);
+        
+
     });
 
 });
@@ -66,4 +74,7 @@ Route::post(
     '/embeddings/{id}',
     [EmbeddingController::class, 'generate']
 );
+
+
+Route::get('/kategori', [KategoriController::class, 'index']);
 
