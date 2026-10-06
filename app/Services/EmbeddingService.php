@@ -21,12 +21,16 @@ class EmbeddingService {
 
         $vector = $reponse->embeddings[0];
 
-        return Embedding::updateOrCreate([
-            'skripsi_id' => $skripsi->id,
-            'model' => 'text-embbeding-model',
-            'dimension' => count($vector),
-            'embedding' => $vector
-        ]);
+        return Embedding::updateOrCreate(
+            [
+                'skripsi_id' => $skripsi->id,
+            ],
+            [
+                'model' => 'text-embedding-model',
+                'dimension' => count($vector),
+                'embedding' => $vector,
+            ]
+        );
 
     }
 }

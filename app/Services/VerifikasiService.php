@@ -39,19 +39,21 @@ class VerifikasiService
     /**
      * Approve a skripsi.
      */
-    public function approve(int $skripsiId, User $kepala, ?string $catatan = null): void
+    public function approve(int $skripsiId, User $kepala, ?string $catatan = null): Skripsi
     {
-        DB::transaction(function () use ($skripsiId, $kepala, $catatan) {
+        return DB::transaction(function () use ($skripsiId, $kepala, $catatan) {
             $skripsi = Skripsi::findOrFail($skripsiId);
 
             $skripsi->update(['status' => SkripsiStatus::Disetujui]);
 
             $skripsi->verifikasiSkripsi()->create([
                 'diverifikasi_oleh' => $kepala->id,
-                'status'            => VerifikasiStatus::Disetujui,
-                'catatan'           => $catatan,
-                'verified_at'       => now(),
+                'status' => VerifikasiStatus::Disetujui,
+                'catatan' => $catatan,
+                'verified_at' => now(),
             ]);
+
+            return $skripsi;
         });
     }
 
@@ -67,9 +69,9 @@ class VerifikasiService
 
             $skripsi->verifikasiSkripsi()->create([
                 'diverifikasi_oleh' => $kepala->id,
-                'status'            => VerifikasiStatus::Ditolak,
-                'catatan'           => $catatan,
-                'verified_at'       => now(),
+                'status' => VerifikasiStatus::Ditolak,
+                'catatan' => $catatan,
+                'verified_at' => now(),
             ]);
         });
     }

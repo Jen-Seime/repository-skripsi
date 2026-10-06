@@ -14,7 +14,12 @@ class SemanticSearchService {
 
         $vector = $respone->embeddings[0];
 
-        $embeddings = Embedding::with('skripsi')
+        $embeddings = Embedding::with([
+            'skripsi.programStudi',
+            'skripsi.kategori',
+            'skripsi.mahasiswa.user',
+            'skripsi.files',
+        ])
         ->whereHas('skripsi', function($q) {
 
             $q->where('status', 'disetujui');
@@ -29,7 +34,7 @@ class SemanticSearchService {
                 'skripsi' => $embedding->skripsi,
                 'similarity' => $similarity,
             ];
-        })->filter(fn ($item) => $item['similarity'] >= 0.5);
+        })->filter(fn ($item) => $item['similarity'] >= 0.70);
 
         
          // 4. Ranking

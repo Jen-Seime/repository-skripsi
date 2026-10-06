@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SkripsiResource;
+use App\Services\EmbeddingService;
 use App\Services\VerifikasiService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,17 +42,19 @@ class VerifikasiController extends Controller
      * POST /verifikasi/skripsi/{id}/approve
      * Setujui skripsi.
      */
-    public function approve(Request $request, string $id): JsonResponse
+    public function approve(Request $request, string $id, EmbeddingService $embeddingService): JsonResponse
     {
         $request->validate([
             'catatan' => ['nullable', 'string', 'max:1000'],
         ]);
 
-        $this->verifikasiService->approve(
+        $skripsi = $this->verifikasiService->approve(
             skripsiId: (int) $id,
             kepala: $request->user(),
             catatan: $request->catatan,
         );
+
+        $embeddingService->generete($skripsi);
 
         return response()->json([
             'message' => 'Skripsi berhasil disetujui',

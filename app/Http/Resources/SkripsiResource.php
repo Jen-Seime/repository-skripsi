@@ -22,6 +22,7 @@ class SkripsiResource extends JsonResource
             'tahun' => $this->tahun,
             'status' => $this->status,
             'di_upload' => $this->created_at,
+            'similarity' => $this?->similarity,
 
             'program_studi' => $this->whenLoaded('programStudi', function () {
                 return [

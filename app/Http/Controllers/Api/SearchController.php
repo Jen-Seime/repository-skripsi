@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SkripsiResource;
 use App\Services\searchHistoryService;
 use App\Services\SemanticSearchService;
 use Illuminate\Http\Request;
@@ -24,12 +25,20 @@ class SearchController extends Controller
 
         $mahasiswa = $request->user()->mahasiswa;
 
+        $skripsi = $results->map(function ($result) {
+            $item = $result['skripsi'];
+
+            $item->similarity = $result['similarity'];
+
+            return $item;
+        });
+
         
 
         if($results->isEmpty()) {
             return response()->json([
                 'query' => $request->q,
-                'data' => $results,
+                'data' => SkripsiResource::collection($skripsi) ,
                 'message' => "idak ditemukan skripsi yang relevan dengan pencarian Anda."
             ]);
         }else {
@@ -38,7 +47,7 @@ class SearchController extends Controller
             
             return response()->json([
                 'query' => $request->q,
-                'data' => $results,
+                'data' => SkripsiResource::collection($skripsi),
             ]);
         }
 
