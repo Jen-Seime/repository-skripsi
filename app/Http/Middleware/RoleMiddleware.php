@@ -15,21 +15,25 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$role): Response
     {
-        if (!$request->user()) {
+        if (! $request->user()) {
             return response()->json([
                 'message' => 'Unauthenticated.',
             ], 401);
         }
 
+        if (! $request->user()->is_active) {
+            return response()->json([
+                'message' => 'Akun Anda telah dinonaktifkan.',
+            ], 403);
+        }
+
         $userRole = $request->user()->role?->value ?? $request->user()->role;
 
-        if (!in_array($userRole, $role)) {
+        if (! in_array($userRole, $role)) {
             return response()->json([
                 'message' => 'Anda tidak memiliki akses.',
             ], 403);
         }
-
-
 
         return $next($request);
     }

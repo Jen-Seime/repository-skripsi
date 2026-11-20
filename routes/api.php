@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthenticationController;
 use App\Http\Controllers\Api\EmbeddingController;
 use App\Http\Controllers\Api\KategoriController;
@@ -20,6 +21,10 @@ Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    // repository
+    Route::get('/repository/skripsi', [RepositoryController::class, 'index']);
+    Route::get('/repository/skripsi/{id}', [RepositoryController::class, 'show']);
+
     // url logout
     Route::get('/logout', [AuthenticationController::class, 'logout']);
 
@@ -30,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // mahasiswa
         Route::get('/my-skripsi', [MahasiswaController::class, 'index']);
-        Route::get('/my-skripsi', [MahasiswaController::class, 'store']);
+        Route::post('/my-skripsi', [MahasiswaController::class, 'store']);
         Route::get('/my-skripsi/{id}', [MahasiswaController::class, 'show']);
         Route::put('/my-skripsi/{id}', [MahasiswaController::class, 'update']);
         Route::delete('/my-skripsi/{id}', [MahasiswaController::class, 'destroy']);
@@ -47,18 +52,22 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/saved-skripsi/{skripsi}', [SavedController::class, 'destroy']);
     });
 
-    // repository
-    Route::get('/repository/skripsi', [RepositoryController::class, 'index']);
-    Route::get('/repository/skripsi/{id}', [RepositoryController::class, 'show']);
-
-    // kepala perpustakaan
-    Route::middleware('role:kepala_perpustakaan')->group(function () {
+    // kepala perpustakaan & super admin
+    Route::middleware('role:kepala_perpustakaan,super_admin')->group(function () {
 
         Route::get('/verifikasi/skripsi', [VerifikasiController::class, 'index']);
         Route::get('/verifikasi/skripsi/{id}', [VerifikasiController::class, 'show']);
         Route::post('/verifikasi/skripsi/{id}/approve', [VerifikasiController::class, 'approve']);
         Route::post('/verifikasi/skripsi/{id}/reject', [VerifikasiController::class, 'reject']);
+
+        // kelola akun mahasiswa
         Route::get('/mahasiswa', [KepalaMahasiswaController::class, 'index']);
+        Route::post('/mahasiswa', [KepalaMahasiswaController::class, 'store']);
+        Route::get('/mahasiswa/{id}', [KepalaMahasiswaController::class, 'show']);
+        Route::put('/mahasiswa/{id}', [KepalaMahasiswaController::class, 'update']);
+        Route::patch('/mahasiswa/{id}/toggle-status', [KepalaMahasiswaController::class, 'toggleStatus']);
+        Route::delete('/mahasiswa/{id}', [KepalaMahasiswaController::class, 'destroy']);
+
         Route::get('/statistik', [StatistikController::class, 'index']);
 
         Route::post('/kategori', [KategoriController::class, 'store']);
@@ -69,6 +78,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/program-studi/{id}', [ProgramStudiController::class, 'update']);
         Route::delete('/program-studi/{id}', [ProgramStudiController::class, 'destroy']);
 
+    });
+
+    // super admin (kelola akun admin)
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/admin', [AdminController::class, 'index']);
+        Route::post('/admin', [AdminController::class, 'store']);
+        Route::get('/admin/{id}', [AdminController::class, 'show']);
+        Route::put('/admin/{id}', [AdminController::class, 'update']);
+        Route::patch('/admin/{id}/toggle-status', [AdminController::class, 'toggleStatus']);
+        Route::delete('/admin/{id}', [AdminController::class, 'destroy']);
     });
 
 });

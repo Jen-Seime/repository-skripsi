@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Enums\SkripsiFileType;
@@ -7,14 +8,13 @@ use App\Models\Mahasiswa;
 use App\Models\Skripsi;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Enum;
 
 class MahasiswaSkripsiService
 {
     public function getMySkripsi(Mahasiswa $mahasiswa)
     {
         return $mahasiswa->skripsi()
-            ->with(['programStudi', 'kategori', 'files'])
+            ->with(['programStudi', 'kategori', 'files', 'latestVerifikasi'])
             ->latest()
             ->get();
     }
@@ -22,7 +22,7 @@ class MahasiswaSkripsiService
     public function showMySkripsi(Mahasiswa $mahasiswa, int $id)
     {
         return $mahasiswa->skripsi()
-            ->with(['programStudi', 'kategori', 'files'])
+            ->with(['programStudi', 'kategori', 'files', 'latestVerifikasi'])
             ->findOrFail($id);
     }
 
@@ -48,7 +48,7 @@ class MahasiswaSkripsiService
                 $this->seveFile($skripsi, $uploadFiles['file_source_code'], SkripsiFileType::SourceCode);
             }
 
-            return $skripsi->load(['programStudi', 'kategori', 'files']);
+            return $skripsi->load(['programStudi', 'kategori', 'files', 'latestVerifikasi']);
         });
     }
 
@@ -76,7 +76,7 @@ class MahasiswaSkripsiService
                 $this->updateFile($skripsi, $uploadFiles['file_source_code'], SkripsiFileType::SourceCode);
             }
 
-            return $skripsi->load(['programStudi', 'kategori', 'files']);
+            return $skripsi->load(['programStudi', 'kategori', 'files', 'latestVerifikasi']);
         });
     }
 
@@ -127,6 +127,4 @@ class MahasiswaSkripsiService
             'mime_type' => $file->getClientMimeType() ?? $file->getMimeType(),
         ]);
     }
-    
 }
-

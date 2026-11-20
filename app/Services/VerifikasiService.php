@@ -12,14 +12,52 @@ use Illuminate\Support\Facades\DB;
 class VerifikasiService
 {
     /**
-     * Get paginated list of skripsi pending verification.
+     * Get paginated list of skripsi pending verification with optional search and filters.
+     *
+     * @param  array<string, mixed>|string|null  $filters
      */
-    public function getSkripsiMenunggu(): LengthAwarePaginator
+    public function getSkripsiMenunggu(array|string|null $filters = []): LengthAwarePaginator
     {
-        return Skripsi::with(['mahasiswa.user', 'programStudi', 'kategori', 'files', 'latestVerifikasi'])
-            ->where('status', SkripsiStatus::Menunggu)
-            ->latest('id')
-            ->paginate(10);
+        if (is_string($filters)) {
+            $filters = ['q' => $filters];
+        }
+
+        $filters = $filters ?? [];
+
+        $query = Skripsi::with(['mahasiswa.user', 'programStudi', 'kategori', 'files', 'latestVerifikasi'])
+            ->where('status', SkripsiStatus::Menunggu);
+
+        $search = $filters['q'] ?? $filters['search'] ?? null;
+        if (! empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('abstrak', 'like', "%{$search}%")
+                    ->orWhere('kata_kunci', 'like', "%{$search}%")
+                    ->orWhereHas('mahasiswa', function ($mQuery) use ($search) {
+                        $mQuery->where('nim', 'like', "%{$search}%")
+                            ->orWhereHas('user', function ($uQuery) use ($search) {
+                                $uQuery->where('name', 'like', "%{$search}%");
+                            });
+
+                    });
+            });
+        }
+
+        if (! empty($filters['kategori_id'])) {
+            $query->where('kategori_id', $filters['kategori_id']);
+        }
+
+        if (! empty($filters['program_studi_id'])) {
+            $query->where('program_studi_id', $filters['program_studi_id']);
+        }
+
+        if (! empty($filters['tahun'])) {
+            $query->where('tahun', $filters['tahun']);
+        }
+
+        $perPage = (int) ($filters['per_page'] ?? 10);
+
+        return $query->latest('id')->paginate($perPage);
     }
 
     /**

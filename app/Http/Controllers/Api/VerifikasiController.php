@@ -20,9 +20,11 @@ class VerifikasiController extends Controller
      * GET /verifikasi/skripsi
      * Daftar skripsi yang menunggu verifikasi.
      */
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $skripsi = $this->verifikasiService->getSkripsiMenunggu();
+        $filters = $request->only(['q', 'search', 'kategori_id', 'program_studi_id', 'tahun', 'per_page']);
+
+        $skripsi = $this->verifikasiService->getSkripsiMenunggu($filters);
 
         return SkripsiResource::collection($skripsi);
     }

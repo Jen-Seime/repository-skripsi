@@ -6,4 +6,5 @@ enum UserRole: string
 {
     case Mahasiswa = 'mahasiswa';
     case KepalaPerpustakaan = 'kepala_perpustakaan';
+    case SuperAdmin = 'super_admin';
 }

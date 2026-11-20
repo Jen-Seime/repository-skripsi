@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProgramStudiSeeder::class,
             KategoriSeeder::class,
+            SuperAdminSeeder::class,
         ]);
 
         $prodiTi = ProgramStudi::where('kode', 'TI')->first();
@@ -48,6 +49,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Dr. Ir. Budi Santoso, M.Kom.',
                 'password' => Hash::make('password'),
                 'role' => UserRole::KepalaPerpustakaan,
+                'is_active' => true,
                 'email_verified_at' => now(),
             ]
         );

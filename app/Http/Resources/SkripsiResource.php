@@ -23,6 +23,10 @@ class SkripsiResource extends JsonResource
             'status' => $this->status,
             'di_upload' => $this->created_at,
             'similarity' => $this?->similarity,
+            'catatan' => $this->when(
+                $this->relationLoaded('latestVerifikasi') || $this->relationLoaded('verifikasiSkripsi'),
+                fn () => $this->latestVerifikasi?->catatan ?? $this->verifikasiSkripsi?->sortByDesc('id')->first()?->catatan
+            ),
 
             'program_studi' => $this->whenLoaded('programStudi', function () {
                 return [

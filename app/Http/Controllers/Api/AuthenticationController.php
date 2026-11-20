@@ -20,11 +20,17 @@ class AuthenticationController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['Email atau Password salah.']
+                'email' => ['Email atau Password salah.'],
             ]);
-        };
+        }
+
+        if (! $user->is_active) {
+            throw ValidationException::withMessages([
+                'email' => ['Akun Anda telah dinonaktifkan. Silakan hubungi administrator.'],
+            ]);
+        }
 
         $token = $user->createToken('userLogin')->plainTextToken;
 
@@ -32,9 +38,9 @@ class AuthenticationController extends Controller
             'message' => 'login berhasil',
             'data' => [
                 'user' => $user,
-                'role' =>$user->role,
-                'token' =>$token
-            ]
+                'role' => $user->role,
+                'token' => $token,
+            ],
         ]);
     }
 
@@ -44,11 +50,9 @@ class AuthenticationController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logout berhasil'
+            'message' => 'Logout berhasil',
         ]);
     }
-
-
 
     /**
      * Display a listing of the resource.
